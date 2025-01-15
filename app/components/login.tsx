@@ -13,15 +13,6 @@ const { Title } = Typography;
 
 const Login: React.FC = () => {
   const router = useRouter();
-  if (localStorage && localStorage.getItem("token")) {
-    router.replace(
-      `${
-        localStorage.getItem("role") === "admin"
-          ? "/add-product"
-          : "/product-list"
-      } `
-    );
-  }
   const dispatch = useDispatch<AppDispatch>();
   const [isSucceeded, setIsSucceeded] = useState<boolean>(false);
   const {
@@ -33,16 +24,16 @@ const Login: React.FC = () => {
     useSelector(selectUser);
   const [activeTab, setActiveTab] = useState<string>("customer");
 
-  const isLoading =
-    loginStatus === "succeeded"
-      ? getDetailsStatus === "succeeded"
-        ? true
-        : getDetailsStatus === "loading"
-        ? true
-        : false
-      : loginStatus === "loading"
-      ? true
-      : false;
+  const isLoading = false
+    // loginStatus === "succeeded"
+    //   ? getDetailsStatus === "succeeded"
+    //     ? true
+    //     : getDetailsStatus === "loading"
+    //     ? true
+    //     : false
+    //   : loginStatus === "loading"
+    //   ? true
+    //   : false;
 
   const handleLogin = (values: { email: string; password: string }) => {
     dispatch(loginUser(values)).then(() => {

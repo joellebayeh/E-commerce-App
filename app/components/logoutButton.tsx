@@ -12,10 +12,7 @@ const LogoutButton: React.FC = () => {
   const handleLogout = () => {
     dispatch(clearUserState());
     dispatch(logout());
-    if(localStorage.getItem("cart")){
-        localStorage.removeItem("cart"); // Clear cart
-    }
-    router.replace("/"); // Redirect to login screen after logout
+    router.replace("/"); // Redirect to log in screen after logout
   };
 
   return (

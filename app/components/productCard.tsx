@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card, Carousel, Button, Image } from "antd";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+import useExtractUrl from "@/app/hooks/useExtractUrl";
 
 interface ProductCardProps {
   product: any;
@@ -15,9 +16,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const { title, price, description, category, images } = product;
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
+
   const handleToggleDescription = () => {
     setDescriptionExpanded(!isDescriptionExpanded);
   };
+
+  const processedImages = (typeof images === "string" ? JSON.parse(images) : images).map((img) => useExtractUrl(img));
 
   return (
     <Card
@@ -25,16 +29,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
       className="shadow-lg "
       cover={
         <Carousel autoplay>
-          {images.map((img, index) => (
-            <Image
+          {processedImages.map((img, index) => (
+              <Image
               key={index}
               alt={title}
               src={img}
               className="object-cover w-full h-64"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg\n"; // Path to your default image
+              }}
             />
           ))}
         </Carousel>
       }
+
     >
       <Card.Meta title={title} description={`Category: ${category.name}`} />
       <p className="text-lg font-semibold text-green-500">Price: ${price}</p>

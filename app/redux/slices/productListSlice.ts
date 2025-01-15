@@ -39,17 +39,35 @@ const productListSlice = createSlice({
     checkedEmpty: [], // this state used to check the last product page
     status: "", // "" | "loading" | "succeeded" | "failed"
     error: "",
+    likedProduct: []
   },
-  reducers: {},
+  reducers: {
+    updateLikedList(state, action) {
+        const productIndex = state.likedProduct.findIndex(
+            (item: any) => item["id"] === action.payload.id
+        );
+        state.likedProduct =
+            productIndex > -1
+                ? state.likedProduct.filter((item: any) => item["id"] !== action.payload.id)
+                : [...state.likedProduct, action.payload];
+    },
+    updateQuantity(state, action) {
+      state.likedProduct = state.likedProduct.map((item) =>
+          item.id === action.payload.id ? { ...item, quantity: item.quantity + action.payload.inc } : item
+      )
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
         state.status = "loading";
         state.error = "";
+        state.likedProduct = state.likedProduct;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.checkedEmpty = action.payload.data;
+        state.likedProduct = state.likedProduct;
         state.products = !action.payload.offset
           ? action.payload.data
           : [...state.products, ...action.payload.data]; // add the new product list to he old one
@@ -57,9 +75,11 @@ const productListSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
+        state.likedProduct = state.likedProduct;
       });
   },
 });
 
 export const selectProducts = (state: RootState) => state.products;
+export const { updateLikedList, updateQuantity } = productListSlice.actions;
 export default productListSlice.reducer;

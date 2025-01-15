@@ -1,8 +1,10 @@
 'use client';
 
 import "./globals.css";
+import '@ant-design/v5-patch-for-react-19';
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import store, { persistor }  from "./redux/store";
+import {PersistGate} from "redux-persist/integration/react";
 
 export default function RootLayout({
   children,
@@ -11,9 +13,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Provider store={store}>
-        <body className="bg-gray-100">{children}</body>
-      </Provider>
+        <body className="bg-gray-100 text-black">
+            <Provider store={store}>
+                <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+                    {children}
+                </PersistGate>
+            </Provider>
+        </body>
     </html>
   );
 }
